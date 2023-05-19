@@ -25,12 +25,19 @@ SECRET_KEY = 'django-insecure-9q&!=+z_5t!q1dh6s&#yp2bb4d41hr+i$ns8vilp%3j+fp@h97
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '10.0.2.2',
+    '127.0.0.1',
+    '192.168.0.13',
+    '192.168.83.151',
+    '192.168.83.142'
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_api.apps.RestApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -116,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
