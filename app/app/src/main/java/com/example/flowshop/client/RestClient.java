@@ -56,7 +56,7 @@ public class RestClient {
 
         JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
                 Request.Method.GET,
-                BASE_URL + "/v1/log",
+                BASE_URL + "/v1/logged",
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -93,7 +93,7 @@ public class RestClient {
         }
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                BASE_URL + "/v1/sessions",
+                BASE_URL + "/v1/login",
                 requestBody,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -132,10 +132,6 @@ public class RestClient {
         queue.add(request);
     }
 
-    public void logo(ImageView imageViewLogo) {
-        Picasso.get().load(BASE_URL + "/static/Logo.jpg").into(imageViewLogo);
-    }
-
     public void register(TextView editTextName, TextView editTextSurnames, TextView editTextEmail, TextView editTextPassword, TextView editTextPassword2, TextView editTextBirthDate) {
         queue = Volley.newRequestQueue(context);
         JSONObject requestBody = new JSONObject();
@@ -153,7 +149,7 @@ public class RestClient {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                BASE_URL + "/v1/users",
+                BASE_URL + "/v1/register",
                 requestBody,
                 new Response.Listener<JSONObject>() {
                     @Override

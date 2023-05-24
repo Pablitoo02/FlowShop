@@ -12,7 +12,7 @@ def health(request):
 
 
 # Comprobación de si ya está registrado
-def log(request):
+def logged(request):
     if request.method != 'GET':
         return JsonResponse({"error": "Método http no soportado"})
 
@@ -63,7 +63,7 @@ def register(request):
 
 
 # Login
-def sessions(request):
+def login(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
 

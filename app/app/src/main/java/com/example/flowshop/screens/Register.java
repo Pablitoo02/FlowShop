@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.flowshop.Launcher;
 import com.example.flowshop.R;
 import com.example.flowshop.client.RestClient;
 import com.example.flowshop.utils.DatePickerFragment;
@@ -53,7 +55,6 @@ public class Register extends AppCompatActivity {
 
         editTextBirthDate.setText(year + "-" + twoDigits(month + 1) + "-" + twoDigits(day));
 
-        restClient.logo(imagen);
 
         iniciarsesion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +126,17 @@ public class Register extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(Register.this, Launcher.class));
+            }
+        }, 500);
     }
 
     private void showDatePickerDialog() {

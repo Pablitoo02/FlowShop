@@ -3,6 +3,7 @@ package com.example.flowshop.screens;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.flowshop.Launcher;
 import com.example.flowshop.R;
 import com.example.flowshop.client.RestClient;
 import com.android.volley.RequestQueue;
@@ -52,15 +54,21 @@ public class Login extends AppCompatActivity {
         password = findViewById(R.id.passwordEditText);
 
         imageViewLogo = findViewById(R.id.logoImageView);
-        restClient.logo(imageViewLogo);
 
         queue = Volley.newRequestQueue(this);
 
     }
 
-    // Método sobreescrito para impedir fallos al pulsar el botón Atrás
+    // Método volver a la pantalla de Launcher
     @Override
     public void onBackPressed(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(Login.this, Launcher.class));
+            }
+        }, 500);
     }
 
     private View.OnClickListener showListener = new View.OnClickListener() {
