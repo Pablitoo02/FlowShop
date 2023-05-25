@@ -1,4 +1,8 @@
 import secrets
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import bcrypt
 import json
 from django.http import JsonResponse
@@ -86,3 +90,58 @@ def login(request):
         return JsonResponse({"sessionToken": random_token}, status=201)
     else:
         return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
+
+
+# Contraseña olvidada
+@csrf_exempt
+def forgotten_password(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método HTPP no soportado'}, status=405)
+    body_json = json.loads(request.body)
+
+    try:
+        json_email = body_json['email']
+    except KeyError:
+        return JsonResponse({"error": "Campo vacio"}, status=400)
+
+    try:
+        db_user = Person.objects.get(email=json_email)
+    except Person.DoesNotExist:
+        return JsonResponse({"error": "Usuario no encontrado"}, status=404)
+
+    password_token = secrets.token_hex(10)
+    db_user.password_token = password_token
+    db_user.save()
+
+    # Creación del mensaje
+    msg = MIMEMultipart("alternative")
+    message = f"""
+        <html>
+        <body>
+            <p align= center> ¡Hola, <i>{db_user.name}</i>! </p> <br>
+            <p align= center> Tu token es el siguiente </p>
+            <p align= center> {password_token} </b> </p>
+        </body>
+        <html>
+         """
+
+    # Parámetros del mensaje
+    password_mail = "pablofp02"
+    msg['From'] = "phermidaa@fpcoruna.afundacion.org"
+    msg['To'] = db_user.email  # "phermidaa@fpcoruna.afundacion.org"
+    msg['Subject'] = "Restablecer la contraseña"
+
+    # Adición del cuerpo del mensaje
+    msg.attach(MIMEText(message, 'html'))
+
+    # Creación del servidor
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    server.starttls()
+
+    # Inicio de sesión para enviar el correo
+    server.login(msg['From'], password_mail)
+
+    # Envio del correo a través del servidor
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    server.quit()
+    return JsonResponse({"successful": "OK"}, status=201)

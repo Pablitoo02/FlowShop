@@ -29,7 +29,7 @@ public class Login extends AppCompatActivity {
     private ImageView imageViewLogo;
     private RequestQueue queue;
     private Context context = this;
-    private RestClient restClient = restClient = RestClient.getInstance(context);
+    private RestClient restClient = RestClient.getInstance(context);
     private boolean canExitApp = false;
     private boolean hide = true;
 
@@ -116,7 +116,7 @@ public class Login extends AppCompatActivity {
     private View.OnClickListener remindListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(Login.this, Remind.class);
+            Intent intent = new Intent(Login.this, ForgottenPassword.class);
             startActivity(intent);
         }
     };

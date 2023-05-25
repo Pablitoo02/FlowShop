@@ -2,6 +2,8 @@ package com.example.flowshop.client;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.flowshop.screens.Drawer;
 import com.example.flowshop.screens.Login;
+import com.example.flowshop.screens.Reestablish;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.Nullable;
@@ -29,9 +33,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RestClient {
+    //URL para utilizar la aplicación desde el emulador
     private String BASE_REAL_URL = "http://10.0.2.2:8000";
+    //URL para utilizar la aplicación desde el móvil (tienen que estar conectados a la misma red)
     private String LOCALHOST = "http://192.168.83.142:8000";
-
+    //Para elegir la URL a usar
     private String BASE_URL = BASE_REAL_URL;
 
     private Context context;
@@ -42,8 +48,8 @@ public class RestClient {
         this.context = context;
     }
 
+    //Para instanciar esta clase
     private static RestClient singleton = null;
-
     public static RestClient getInstance(Context context) {
         if (singleton == null) {
             singleton = new RestClient(context);
@@ -178,6 +184,43 @@ public class RestClient {
                         }
                     }
                 });
+        this.queue.add(request);
+    }
+
+    public void ForgottenPassword(EditText email, Context context){
+        queue = Volley.newRequestQueue(context);
+        JSONObject requestBody = new JSONObject();
+
+        try {
+            requestBody.put("email", email.getText().toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                BASE_URL + "/v1/forget",
+                requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "Código enviado", Toast.LENGTH_SHORT).show();
+                        //CAMBIO A LA SIGUIENTE PANTALLA
+                        Intent intent = new Intent(context, Reestablish.class);
+                        context.startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        if (error.networkResponse.statusCode == 404) {
+                            email.setError("Usuario no registrado");
+                        }
+                    }
+                });
+
+        request.setRetryPolicy(new DefaultRetryPolicy(5000, 0, DEFAULT_BACKOFF_MULT));
         this.queue.add(request);
     }
 }
