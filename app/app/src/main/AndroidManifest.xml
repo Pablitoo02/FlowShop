@@ -29,8 +29,8 @@
                 android:value="" />
         </activity>
 
-        <activity android:name=".screens.Login"/>
         <activity android:name=".screens.Register"/>
+        <activity android:name=".screens.Login"/>
         <activity android:name=".screens.ForgottenPassword"/>
 
         <meta-data

@@ -88,6 +88,55 @@ public class RestClient {
         this.queue.add(request);
     }
 
+    public void register(TextView editTextName, TextView editTextSurnames, TextView editTextEmail, TextView editTextPassword, TextView editTextPassword2, TextView editTextBirthDate) {
+        queue = Volley.newRequestQueue(context);
+        JSONObject requestBody = new JSONObject();
+        try {
+
+            requestBody.put("name", editTextName.getText().toString());
+            requestBody.put("surnames", editTextSurnames.getText().toString());
+            requestBody.put("email", editTextEmail.getText().toString());
+            requestBody.put("password", editTextPassword.getText().toString());
+            requestBody.put("birthdate", editTextBirthDate.getText().toString());
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                BASE_URL + "/v1/register",
+                requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Toast.makeText(context, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, Login.class);
+                        context.startActivity(intent);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse == null) {
+                            Toast.makeText(context, "Sin conexión", Toast.LENGTH_LONG).show();
+
+                        } else if(error.networkResponse.statusCode == 409) {
+                            Toast.makeText(context, "Cuenta ya registrada", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else {
+                            int serverCode = error.networkResponse.statusCode;
+                            Toast.makeText(context, "Error: " + serverCode, Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+                });
+        this.queue.add(request);
+    }
+
     public void login(EditText email, EditText password, Context context) {
         queue = Volley.newRequestQueue(context);
         JSONObject requestBody = new JSONObject();
@@ -136,55 +185,6 @@ public class RestClient {
                     }
                 });
         queue.add(request);
-    }
-
-    public void register(TextView editTextName, TextView editTextSurnames, TextView editTextEmail, TextView editTextPassword, TextView editTextPassword2, TextView editTextBirthDate) {
-        queue = Volley.newRequestQueue(context);
-        JSONObject requestBody = new JSONObject();
-        try {
-
-            requestBody.put("name", editTextName.getText().toString());
-            requestBody.put("surnames", editTextSurnames.getText().toString());
-            requestBody.put("email", editTextEmail.getText().toString());
-            requestBody.put("password", editTextPassword.getText().toString());
-            requestBody.put("birthdate", editTextBirthDate.getText().toString());
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                BASE_URL + "/v1/register",
-                requestBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        Toast.makeText(context, "Cuenta creada con éxito", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(context, Login.class);
-                        context.startActivity(intent);
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse == null) {
-                            Toast.makeText(context, "Sin conexión", Toast.LENGTH_LONG).show();
-
-                        } else if(error.networkResponse.statusCode == 409) {
-                            Toast.makeText(context, "Cuenta ya registrada", Toast.LENGTH_SHORT).show();
-
-                        }
-                        else {
-                            int serverCode = error.networkResponse.statusCode;
-                            Toast.makeText(context, "Error: " + serverCode, Toast.LENGTH_LONG).show();
-
-                        }
-                    }
-                });
-        this.queue.add(request);
     }
 
     public void ForgottenPassword(EditText email, Context context){
