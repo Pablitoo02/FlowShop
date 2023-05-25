@@ -32,6 +32,7 @@
         <activity android:name=".screens.Register"/>
         <activity android:name=".screens.Login"/>
         <activity android:name=".screens.ForgottenPassword"/>
+        <activity android:name=".screens.ReestablishPassword"/>
 
         <meta-data
             android:name="preloaded_fonts"

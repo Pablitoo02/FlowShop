@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.flowshop.screens.Drawer;
 import com.example.flowshop.screens.Login;
-import com.example.flowshop.screens.Reestablish;
-import com.squareup.picasso.Picasso;
+import com.example.flowshop.screens.ReestablishPassword;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
@@ -206,7 +204,7 @@ public class RestClient {
                     public void onResponse(JSONObject response) {
                         Toast.makeText(context, "Código enviado", Toast.LENGTH_SHORT).show();
                         //CAMBIO A LA SIGUIENTE PANTALLA
-                        Intent intent = new Intent(context, Reestablish.class);
+                        Intent intent = new Intent(context, ReestablishPassword.class);
                         context.startActivity(intent);
                     }
                 },
@@ -221,6 +219,42 @@ public class RestClient {
                 });
 
         request.setRetryPolicy(new DefaultRetryPolicy(5000, 0, DEFAULT_BACKOFF_MULT));
+        this.queue.add(request);
+    }
+
+    public void reestablishPassword(String passwordToken, String newPassword) {
+        queue = Volley.newRequestQueue(context);
+        JSONObject requestBody = new JSONObject();
+
+        try {
+            requestBody.put("passwordToken", passwordToken);
+            requestBody.put("newPassword", newPassword);
+        } catch (JSONException exception) {
+            exception.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                BASE_URL + "/v1/password",
+                requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "Contraseña cambiada con éxito", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, Login.class);
+                        context.startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 404) {
+                            Toast.makeText(context, "Token no válido", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
         this.queue.add(request);
     }
 }
