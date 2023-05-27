@@ -17,81 +17,98 @@
 
     <TextView
         android:id="@+id/registerTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/alegreya_sc_bold"
+        android:text="LOGIN"
+        android:textColor="@color/logo"
+        android:textSize="34sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoImageView"
-        app:layout_constraintVertical_bias="0.2"
-        android:text="LOGIN"
-        android:textAlignment="center"
         android:layout_marginTop="20sp"
-        android:textStyle="bold"
-        android:textSize="34sp"
-        android:textColor="@color/black"/>
+        app:layout_constraintVertical_bias="0.2" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="250dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registerTextView"
-        android:layout_marginTop="22sp"
+        android:layout_marginTop="22dp"
+        android:fontFamily="@font/alegreya_bold"
         android:hint="email"
-        android:inputType="textEmailAddress"/>
+        android:inputType="textEmailAddress"
+        android:maxLength="100"
+        android:textColor="@color/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/registerTextView" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="250dp"
         android:layout_height="0dp"
         android:layout_marginTop="22sp"
+        android:fontFamily="@font/alegreya_bold"
         android:hint="contraseña"
-        android:inputType="textPassword"
         android:maxLength="30"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailEditText" />
-
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="iniciar sesión"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
-
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        android:textColor="@color/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="22sp"
-        android:text="registrarte"/>
-
-    <Button
-        android:id="@+id/remindButton"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/registerButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="22sp"
-        android:text="he olvidado mi contraseña"/>
+        app:layout_constraintTop_toBottomOf="@id/emailEditText"
+        android:inputType="textPassword" />
 
     <TextView
         android:id="@+id/mostrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/alegreya_bold"
         android:layout_marginTop="24dp"
         android:text="@string/mostrar_contraseña"
-        android:textColor="#3F51B5"
+        android:textColor="@color/logo"
         app:layout_constraintStart_toStartOf="@id/passwordEditText"
         app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
+
+    <Button
+        android:id="@+id/loginButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/alegreya_sc_bold"
+        android:text="iniciar sesión"
+        android:textColor="@color/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
+        app:layout_constraintHorizontal_bias="0.497" />
+
+    <Button
+        android:id="@+id/registerButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22sp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/alegreya_sc_bold"
+        android:text="registrarte"
+        android:textColor="@color/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginButton" />
+
+    <Button
+        android:id="@+id/remindButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22sp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/alegreya_sc_bold"
+        android:text="he olvidado mi contraseña"
+        android:textColor="@color/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/registerButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
