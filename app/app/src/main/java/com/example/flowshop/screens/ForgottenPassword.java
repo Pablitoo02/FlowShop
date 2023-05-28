@@ -32,6 +32,8 @@ public class ForgottenPassword extends AppCompatActivity {
         send.setOnClickListener(remindListener);
     }
 
+    //Método para mandar el email con el token de contraseña y cambiar a la pantalla "ReestablishPassword",
+    //si el email está cubierto y de manera válida
     private View.OnClickListener remindListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -41,17 +43,7 @@ public class ForgottenPassword extends AppCompatActivity {
                 email.setError("Campo obligatorio");
             } else {
                 restClient.ForgottenPassword(email, context);
-
-                HideKeyboard();
             }
         }
     };
-
-    private void HideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null){
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
 }

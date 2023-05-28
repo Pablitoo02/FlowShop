@@ -37,6 +37,8 @@ public class ReestablishPassword extends AppCompatActivity {
         showPassword.setOnClickListener(showPasswordListener);
     }
 
+    //Método para reestablecer la contraseña y cambiar a la pantalla "Login",
+    //si todos los campos están cubiertos y de manera válida
     View.OnClickListener submitListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -54,23 +56,18 @@ public class ReestablishPassword extends AppCompatActivity {
         }
     };
 
+    //Método para mostrar las contraseñas
     View.OnClickListener showPasswordListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (newPassword.getText().toString().isEmpty() && newPassword2.getText().toString().isEmpty()) {
-                newPassword.setError("Falta Contraseña");
-                newPassword2.setError("Falta Contraseña");
+            if (hide) {
+                hide = false;
+                newPassword.setTransformationMethod(null);
+                newPassword2.setTransformationMethod(null);
             } else {
-                if (hide) {
-                    hide = false;
-                    newPassword.setTransformationMethod(null);
-                    newPassword2.setTransformationMethod(null);
-                } else {
-                    hide = true;
-                    newPassword.setTransformationMethod(new PasswordTransformationMethod());
-                    newPassword2.setTransformationMethod(new PasswordTransformationMethod());
-
-                }
+                hide = true;
+                newPassword.setTransformationMethod(new PasswordTransformationMethod());
+                newPassword2.setTransformationMethod(new PasswordTransformationMethod());
             }
         }
     };
