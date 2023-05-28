@@ -86,7 +86,7 @@ public class RestClient {
         this.queue.add(request);
     }
 
-    public void register(TextView editTextName, TextView editTextSurnames, TextView editTextEmail, TextView editTextPassword, TextView editTextPassword2, TextView editTextBirthDate) {
+    public void register(TextView editTextName, TextView editTextSurnames, TextView editTextEmail, TextView editTextPassword) {
         queue = Volley.newRequestQueue(context);
         JSONObject requestBody = new JSONObject();
         try {
@@ -95,7 +95,6 @@ public class RestClient {
             requestBody.put("surnames", editTextSurnames.getText().toString());
             requestBody.put("email", editTextEmail.getText().toString());
             requestBody.put("password", editTextPassword.getText().toString());
-            requestBody.put("birthdate", editTextBirthDate.getText().toString());
 
         } catch (JSONException e) {
             throw new RuntimeException(e);

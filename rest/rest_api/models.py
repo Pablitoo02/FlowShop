@@ -6,7 +6,6 @@ class Person(models.Model):
     name = models.CharField(max_length=50)
     surnames = models.CharField(max_length=100)
     email = models.EmailField()
-    birthday = models.DateField()
     password = models.CharField(max_length=150)
     password_token = models.CharField(max_length=20, null=True)
     token = models.CharField(max_length=20, unique=True, null=True)

@@ -1,6 +1,5 @@
 package com.example.flowshop.screens;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,10 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.flowshop.Launcher;
 import com.example.flowshop.R;
 import com.example.flowshop.client.RestClient;
-import com.example.flowshop.utils.DatePickerFragment;
 import com.example.flowshop.utils.ValidateEmail;
-
-import java.util.Calendar;
 
 public class Register extends AppCompatActivity {
     private EditText editTextEmail,editTextPassword,editTextPassword2,editTextName,editTextSurnames;
@@ -45,26 +40,23 @@ public class Register extends AppCompatActivity {
         editTextPassword2 = findViewById(R.id.editTextTextPassword2);
         mostrarContraseña = findViewById(R.id.MostrarContraseña);
 
+        //Método para mostrar la contraseña
         mostrarContraseña.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (editTextPassword.getText().toString().isEmpty() && editTextPassword2.getText().toString().isEmpty()) {
-                    editTextPassword.setError("Falta Contraseña");
-                    editTextPassword2.setError("Falta Contraseña");
+                if (hide) {
+                    hide = false;
+                    editTextPassword.setTransformationMethod(null);
+                    editTextPassword2.setTransformationMethod(null);
                 } else {
-                    if (hide) {
-                        hide = false;
-                        editTextPassword.setTransformationMethod(null);
-                        editTextPassword2.setTransformationMethod(null);
-                    } else {
-                        hide = true;
-                        editTextPassword.setTransformationMethod(new PasswordTransformationMethod());
-                        editTextPassword2.setTransformationMethod(new PasswordTransformationMethod());
-                    }
+                    hide = true;
+                    editTextPassword.setTransformationMethod(new PasswordTransformationMethod());
+                    editTextPassword2.setTransformationMethod(new PasswordTransformationMethod());
                 }
             }
         });
 
+        //Método para registrarse y cambiar a la pantalla "Login", si todos los campos están cubiertos y de manera válida
         registerButton = findViewById(R.id.registerbutton);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,10 +84,15 @@ public class Register extends AppCompatActivity {
                 if (editTextEmail.length() == 0)
                     editTextEmail.setError("Falta Email");
 
+                else {
+                    restClient.register(editTextName, editTextSurnames, editTextEmail, editTextPassword);
+                }
+
             }
         });
     }
 
+    // Método volver a la pantalla de Launcher
     @Override
     public void onBackPressed(){
         Handler handler = new Handler();

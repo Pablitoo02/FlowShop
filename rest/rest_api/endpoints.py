@@ -41,7 +41,6 @@ def register(request):
         json_username = body_json['name']
         json_surname = body_json['surnames']
         json_email = body_json['email']
-        json_birthdate = body_json['birthdate']
         json_password = body_json['password']
 
 
@@ -57,7 +56,6 @@ def register(request):
                              password=salted_and_hashed_pass,
                              name=json_username,
                              surnames=json_surname,
-                             birthday=json_birthdate,
                              token=None,
                              password_token=None
 
