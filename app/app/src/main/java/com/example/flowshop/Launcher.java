@@ -30,7 +30,6 @@ public class Launcher extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
         SharedPreferences preferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         String sessionToken = preferences.getString("tokenSession", null);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         imageViewLogo = findViewById(R.id.logo);
         logerButton = findViewById(R.id.logerButton);

@@ -23,7 +23,7 @@ import com.example.flowshop.utils.ValidateEmail;
 
 public class Login extends AppCompatActivity {
 
-    private Button loginButton, registerButton, remindButton;
+    private Button loginButton, remindButton;
     private EditText email, password;
     private TextView showpassword;
     private ImageView imageViewLogo;
@@ -43,9 +43,6 @@ public class Login extends AppCompatActivity {
 
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(loginListener);
-
-        registerButton = findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(registerListener);
 
         remindButton = findViewById(R.id.remindButton);
         remindButton.setOnClickListener(remindListener);
@@ -71,23 +68,21 @@ public class Login extends AppCompatActivity {
         }, 500);
     }
 
+    //Método para mostrar la contraseña
     private View.OnClickListener showListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (password.getText().toString().isEmpty()) {
-                password.setError("Falta Contraseña");
+            if (hide) {
+                hide = false;
+                password.setTransformationMethod(null);
             } else {
-                if (hide) {
-                    hide = false;
-                    password.setTransformationMethod(null);
-                } else {
-                    hide = true;
-                    password.setTransformationMethod(new PasswordTransformationMethod());
-                }
+                hide = true;
+                password.setTransformationMethod(new PasswordTransformationMethod());
             }
         }
     };
 
+    //Método para iniciar sesión y cambiar a la pantalla "Home", si todos los campos están cubiertos y de manera válida
     private View.OnClickListener loginListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -100,19 +95,10 @@ public class Login extends AppCompatActivity {
             } else {
                 restClient.login(email, password, context);
             }
-
-
         }
     };
 
-    private View.OnClickListener registerListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(context, Register.class);
-            startActivity(intent);
-        }
-    };
-
+    //Método para cuando se te olvida la contraseña y cambiar a la pantalla "ForgottenPassword"
     private View.OnClickListener remindListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
