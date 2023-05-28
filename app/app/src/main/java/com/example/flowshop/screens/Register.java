@@ -24,11 +24,11 @@ import com.example.flowshop.utils.ValidateEmail;
 import java.util.Calendar;
 
 public class Register extends AppCompatActivity {
-    private EditText editTextEmail,editTextPassword,editTextPassword2,editTextName,editTextBirthDate,editTextSurnames;
+    private EditText editTextEmail,editTextPassword,editTextPassword2,editTextName,editTextSurnames;
     private Button registerButton;
     private Context context = this;
     private ImageView imagen;
-    private TextView mostrarContraseña,iniciarsesion;
+    private TextView mostrarContraseña;
     private Boolean hide = true;
     private RestClient restClient = RestClient.getInstance(this);
 
@@ -42,27 +42,8 @@ public class Register extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextName = findViewById(R.id.editTextName);
         editTextSurnames = findViewById(R.id.editTextSurnames);
-        editTextBirthDate = findViewById(R.id.editTextBirthDate);
         editTextPassword2 = findViewById(R.id.editTextTextPassword2);
-        iniciarsesion = findViewById(R.id.iniciar_sesion);
         mostrarContraseña = findViewById(R.id.MostrarContraseña);
-
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        year = year-18;
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        editTextBirthDate.setText(year + "-" + twoDigits(month + 1) + "-" + twoDigits(day));
-
-
-        iniciarsesion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context,Login.class);
-                startActivity(intent);
-            }
-        });
 
         mostrarContraseña.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,15 +63,6 @@ public class Register extends AppCompatActivity {
                     }
                 }
             }
-        });
-
-        editTextBirthDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                showDatePickerDialog();
-            }
-
         });
 
         registerButton = findViewById(R.id.registerbutton);
@@ -120,10 +92,6 @@ public class Register extends AppCompatActivity {
                 if (editTextEmail.length() == 0)
                     editTextEmail.setError("Falta Email");
 
-                if (editTextName.getError() == null && editTextPassword.getError() == null && editTextSurnames.getError() == null && editTextPassword2.getError() == null && editTextEmail.getError() == null ){
-                    restClient.register(editTextName,editTextSurnames,editTextEmail,editTextPassword,editTextPassword2,editTextBirthDate);
-
-                }
             }
         });
     }
@@ -137,21 +105,5 @@ public class Register extends AppCompatActivity {
                 startActivity(new Intent(Register.this, Launcher.class));
             }
         }, 500);
-    }
-
-    private void showDatePickerDialog() {
-
-        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                final String selectedDate = year + "-" + twoDigits(month + 1) + "-" + twoDigits(day);
-                editTextBirthDate.setText(selectedDate);
-            }
-        });
-        newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-    private String twoDigits(int n) {
-        return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
 }
