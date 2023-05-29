@@ -1,20 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".screens.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fontFamily="@font/alegreya_sc_bold"
-        android:gravity="center"
-        android:text="Home fragment"
-        android:textColor="@color/logo"
-        android:textSize="40sp" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <Button
+            android:id="@+id/sweatshirts"
+            android:layout_width="match_parent"
+            android:layout_height="244.33dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/alegreya_sc_bold"
+            android:text="SUDADERAS"
+            android:textColor="@color/logo"
+            android:textSize="40dp" />
+
+        <Button
+            android:id="@+id/t_shirts"
+            android:layout_width="match_parent"
+            android:layout_height="244.33dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/alegreya_sc_bold"
+            android:text="CAMISETAS"
+            android:textColor="@color/logo"
+            android:textSize="40dp"/>
+
+        <Button
+            android:id="@+id/trousers"
+            android:layout_width="match_parent"
+            android:layout_height="244.33dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/alegreya_sc_bold"
+            android:text="PANTALONES"
+            android:textColor="@color/logo"
+            android:textSize="40dp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
