@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
         }
     };
 
-    //Método para iniciar sesión y cambiar a la pantalla "Home", si todos los campos están cubiertos y de manera válida
+    //Método para iniciar sesión y cambiar a la pantalla "Drawer", si todos los campos están cubiertos y de manera válida
     private View.OnClickListener loginListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {

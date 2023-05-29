@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor">@color/logo</item>
     </style>
+    
+    <style name="BottomNavigation">
+        <item name="android:background">@color/logo</item>
+        <item name="itemIconTint">@color/white</item>
+        <item name="itemTextColor">@color/white</item>
+    </style>
 </resources>

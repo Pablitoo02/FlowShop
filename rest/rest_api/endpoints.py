@@ -65,6 +65,7 @@ def register(request):
 
 
 # Login
+@csrf_exempt
 def login(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
