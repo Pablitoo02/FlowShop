@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -22,21 +24,26 @@ import com.android.volley.toolbox.Volley;
 import com.example.flowshop.screens.Drawer;
 import com.example.flowshop.screens.Login;
 import com.example.flowshop.screens.ReestablishPassword;
+import com.example.flowshop.utils.Product;
+import com.example.flowshop.utils.RecyclerAdapter;
 
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RestClient {
     //URL para utilizar la aplicación desde el emulador
     private String BASE_REAL_URL = "http://10.0.2.2:8000";
     //URL para utilizar la aplicación desde el móvil (tienen que estar conectados a la misma red)
-    private String LOCALHOST = "http://192.168.83.142:8000";
+    private String LOCALHOST = "http://10.0.2.2:8000";
     //Para elegir la URL a usar
-    private String BASE_URL = BASE_REAL_URL;
+    private String BASE_URL = LOCALHOST;
 
     private Context context;
 
@@ -255,6 +262,49 @@ public class RestClient {
         );
 
         this.queue.add(request);
+    }
+
+    public void products(String name, int size, int offset, OnProductClickListener productListener, RecyclerView recyclerView, ProductsResponseListener listener) {
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                BASE_URL + "/v1/products?size=" + size + "&offset=" + offset + "&name=" + name,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        List<Product> itemList = new ArrayList() {};
+                        int count = 0;
+                        try {
+                            count = response.getInt("count");
+                            JSONArray results = response.getJSONArray("results");
+
+
+                            for (int i=0; i < results.length(); i++) {
+                                JSONObject product = results.getJSONObject(i);
+                                Product newproduct = new Product(product.getString("name"), product.getString("price"),
+                                        product.getString("brand"), product.getString("modelo"), BASE_URL + product.getString("image"));
+                                itemList.add(newproduct);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(itemList, productListener);
+                        recyclerView.setAdapter(recyclerAdapter);
+                        listener.onProductsResponse(count);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        queue.add(request);
     }
 }
 

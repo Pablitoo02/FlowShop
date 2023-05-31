@@ -3,8 +3,13 @@ package com.example.flowshop.screens;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,88 +17,110 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.flowshop.R;
+import com.example.flowshop.client.OnProductClickListener;
+import com.example.flowshop.client.RestClient;
+import com.example.flowshop.client.ProductsResponseListener;
+import com.example.flowshop.utils.Product;
+import com.example.flowshop.utils.RecyclerAdapter;
 
-public class HomeFragment extends Fragment {
+import java.util.List;
 
+public class HomeFragment extends Fragment implements OnProductClickListener, SearchView.OnQueryTextListener, ProductsResponseListener {
+
+    private SearchView searchView;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private RestClient restClient;
+    private List<Product> items;
     private Context context;
-    private Button sweatshirts, t_shirts, trousers;
+    private Button previous, next;
+    private final int size = 5;
+    private int offset = 0;
+    private String query= "";
 
-    /*private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";*/
-
-    public HomeFragment() {
-        // Required empty public constructor
+    public static Fragment newInstance() {
+        HomeFragment myFragment = new HomeFragment();
+        return myFragment;
     }
 
-    /*public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
-    }
+        searchView = view.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(this);
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        sweatshirts =  view.findViewById(R.id.sweatshirts);
-        t_shirts =  view.findViewById(R.id.t_shirts);
-        trousers =  view.findViewById(R.id.trousers);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
-        //Botón "Sweatshirts"
-        sweatshirts.setOnClickListener(new View.OnClickListener() {
+        context = getActivity().getApplicationContext();
+
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(manager);
+
+        recyclerAdapter = new RecyclerAdapter(items, this);
+        recyclerView.setAdapter(recyclerAdapter);
+
+        peticion(query);
+
+        previous = view.findViewById(R.id.previous);
+        next = view.findViewById(R.id.next);
+
+        //Botón para pasar a la next página
+        previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Cambio al fragment "Sweatshirts"
-                SweatshirtsFragment sweatshirts = new SweatshirtsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameContainer,sweatshirts)
-                        .addToBackStack(null)
-                        .commit();
+                if (offset != 0) {
+                    offset-=size;
+                    peticion(query);
+                }
             }
         });
 
-        //Botón "T_shirts"
-        t_shirts.setOnClickListener(new View.OnClickListener() {
+        //Botón para volver a la página anterior
+        next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Cambio al fragment "T_shirts"
-                T_shirtsFragment t_shirts = new T_shirtsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameContainer,t_shirts)
-                        .addToBackStack(null)
-                        .commit();
+                if (recyclerAdapter.getItemCount() == 0) {
+                    offset+=size;
+                    peticion(query);
+                }
             }
         });
 
-        //Botón "Trousers"
-        trousers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Cambio al fragment "Trousers"
-                TrousersFragment trousers=new TrousersFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameContainer,trousers)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+        return view;
+    }
+
+    //Instancia de la petición de "RestClient" para que muestre los items
+    private void peticion(String query) {
+        restClient = RestClient.getInstance(context);
+        restClient.products(query, size, offset,this, recyclerView, this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    // Método que llama cada vez que se escribe o borra un caracter
+    @Override
+    public boolean onQueryTextChange(String query) {
+        offset = 0;
+        this.query = query;
+        peticion(query);
+        return false;
+    }
+
+    // Método que llama cada vez que se se hace click en un item
+    public void itemClick(Product item) {
+        getActivity().getFragmentManager().beginTransaction().replace(R.id.frameContainer, DetailSweatshirtFragment.newInstance(item.getModelo())).commit();
+    }
+
+    //Método para que los botones funcionen cuando deben
+    @Override
+    public void onProductsResponse(int count) {
+        next.setEnabled(count > offset+size);
+        previous.setEnabled(offset!=0);
     }
 }

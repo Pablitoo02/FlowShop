@@ -25,4 +25,5 @@ urlpatterns = [
     path('v1/login', endpoints.login),
     path('v1/forget', endpoints.forgotten_password),
     path('v1/password', endpoints.reestablish_password),
+    path('v1/products', endpoints.products),
 ]

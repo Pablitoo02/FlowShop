@@ -5,6 +5,8 @@ from email.mime.text import MIMEText
 
 import bcrypt
 import json
+
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -188,7 +190,8 @@ def reestablish_password(request):
             u = Person.objects.get(token=token_cabeceras)
 
             if bcrypt.checkpw(json_password.encode('utf8'), u.password.encode('utf8')):
-                salted_and_hashed_pass = bcrypt.hashpw(new_json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
+                salted_and_hashed_pass = bcrypt.hashpw(new_json_password.encode('utf8'), bcrypt.gensalt()).decode(
+                    'utf8')
                 u.password = salted_and_hashed_pass
                 u.save()
 
@@ -200,3 +203,73 @@ def reestablish_password(request):
 
         except Person.DoesNotExist:
             return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+
+# Lista de productos
+def products(request):
+    if request.method != 'GET':
+        return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
+
+    # Cantidad de resultados por página
+    size = request.GET.get("size", None)
+
+    # Posicion de la primera sudadera a mostrar en la página
+    offset = request.GET.get("offset", None)
+
+    # Nombre de la sudadera
+    name = request.GET.get("name", None)
+
+    if size is None:
+        if offset is None:
+            products = Product.objects.filter(Q(name__contains=name) | Q(brand__contains=name)).values_list('name',
+                                                                                    'price',
+                                                                                    'brand',
+                                                                                    'modelo',
+                                                                                    'image')
+        else:
+            try:
+                offset = int(offset)
+            except ValueError:
+                return JsonResponse({"error": "Parámetro offset erróneo"}, status=400)
+
+            return JsonResponse({"error": "Faltán parámetros"}, status=400)
+    else:
+        try:
+            size = int(size)
+        except ValueError:
+            return JsonResponse({"error": "Parámetro size erróneo"}, status=400)
+
+        if offset is None:
+            return JsonResponse({"error": "Faltán parámetros"}, status=400)
+        else:
+            try:
+                offset = int(offset)
+            except ValueError:
+                return JsonResponse({"error": "Parámetro offset erróneo"}, status=400)
+
+            if name is None or len(name) == 0:
+                products = Product.objects.all().values_list('name',
+                                                             'price',
+                                                             'brand',
+                                                             'modelo',
+                                                             'image')[offset:offset + size]
+            else:
+                products = Product.objects.filter(Q(name__contains=name) | Q(brand__contains=name)).values_list('name',
+                                                                                        'price',
+                                                                                        'brand',
+                                                                                        'modelo',
+                                                                                        'image')[
+                           offset:offset + size]
+
+    count = Product.objects.count()
+
+    results = []
+    if products is not None:
+        for product in products:
+            results.append({"name": product[0],
+                            "price": product[1],
+                            "brand": product[2],
+                            'modelo': product[3],
+                            "image": product[4]})
+
+    return JsonResponse({"count": count, "results": results}, safe=False)

@@ -11,17 +11,15 @@ class Person(models.Model):
     token = models.CharField(max_length=20, unique=True, null=True)
 
 
-class Category(models.Model):
-    # id auto-generated
-    name = models.CharField(max_length=50)
-
-
 class Product(models.Model):
     # id auto-generated
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=200)
+    description = models.CharField(max_length=2000)
+    modelo = models.CharField(max_length=30, unique=True)
+    color = models.CharField(max_length=200, default=None)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    brand = models.CharField(max_length=255, default=None)
+    image = models.CharField(max_length=500, default=None)
 
 
 class ProductPerson(models.Model):
