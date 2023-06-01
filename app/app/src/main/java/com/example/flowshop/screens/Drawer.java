@@ -61,4 +61,8 @@ public class Drawer extends AppCompatActivity {
         transaction.replace(R.id.frameContainer, fragment);
         transaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

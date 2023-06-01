@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment implements OnProductClickListener, Se
 
     // Método que llama cada vez que se se hace click en un item
     public void itemClick(Product item) {
-        getActivity().getFragmentManager().beginTransaction().replace(R.id.frameContainer, DetailSweatshirtFragment.newInstance(item.getModelo())).commit();
+        getActivity().getFragmentManager().beginTransaction().replace(R.id.frameContainer, DetailFragment.newInstance(item.getModelo())).commit();
     }
 
     //Método para que los botones funcionen cuando deben

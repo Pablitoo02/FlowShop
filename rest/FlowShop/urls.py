@@ -26,4 +26,7 @@ urlpatterns = [
     path('v1/forget', endpoints.forgotten_password),
     path('v1/password', endpoints.reestablish_password),
     path('v1/products', endpoints.products),
+    path('v1/product/<str:modelo>', endpoints.product),
+    path('v1/products/<str:modelo>/favorites', endpoints.favorites),
+    path('v1/products/<str:modelo>/cart', endpoints.cart),
 ]

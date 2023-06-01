@@ -7,7 +7,10 @@ import static com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +24,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.flowshop.R;
 import com.example.flowshop.screens.Drawer;
 import com.example.flowshop.screens.Login;
 import com.example.flowshop.screens.ReestablishPassword;
 import com.example.flowshop.utils.Product;
 import com.example.flowshop.utils.RecyclerAdapter;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -305,6 +310,143 @@ public class RestClient {
         );
 
         queue.add(request);
+    }
+
+    public void product(String modelo, Context context, ImageView image, TextView name, TextView price, TextView brand,
+                        TextView description, TextView model, TextView color){
+
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                BASE_URL + "/v1/product/" + modelo,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            Picasso.get().load(BASE_URL + response.getString("image")).into(image);
+                            name.setText(response.getString("name"));
+                            price.setText(response.getString("price"));
+                            brand.setText(response.getString("brand"));
+                            description.setText(response.getString("description"));
+                            model.setText(response.getString("model"));
+                            color.setText(response.getString("color"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse.statusCode == 404) {
+                            Toast.makeText(context, "Este producto no exite", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+        this.queue.add(request);
+    }
+
+    public void isFavorite(String modelo, IsFavoriteListener listener){
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.GET,
+                BASE_URL + "/v1/products/" + modelo + "/favorites",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onResponseReceived(true);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onResponseReceived(false);
+                    }
+                },
+                context
+        );
+        this.queue.add(request);
+    }
+
+    public void addFavorites(String modelo, ImageButton favoriteButton) {
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.PUT,
+                BASE_URL + "/v1/products/" + modelo + "/favorites",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        favoriteButton.setBackgroundResource(R.drawable.full_favorite);
+                        favoriteButton.setEnabled(true);//HABILITA EL BOTÓN
+                        Toast.makeText(context, "Guardado en favoritos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error al guardar", Toast.LENGTH_SHORT).show();
+                        favoriteButton.setEnabled(true);//HABILITA EL BOTÓN
+                    }
+                },
+                context
+        );
+        this.queue.add(request);
+    }
+
+    public void deleteFavorites(String modelo, ImageButton favoriteButton) {
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.DELETE,
+                BASE_URL + "/v1/products/" + modelo + "/favorites",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        favoriteButton.setBackgroundResource(R.drawable.favorite);
+                        favoriteButton.setEnabled(true); //HABILITA EL BOTÓN
+                        Toast.makeText(context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                context
+        );
+
+        queue.add(request);
+    }
+
+    public void addCart(String modelo, Button cart) {
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.PUT,
+                BASE_URL + "/v1/products/" + modelo + "/cart",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "Añadido al carrito", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error al añadir", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                context
+        );
+        this.queue.add(request);
     }
 }
 

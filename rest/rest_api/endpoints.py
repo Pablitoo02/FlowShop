@@ -273,3 +273,101 @@ def products(request):
                             "image": product[4]})
 
     return JsonResponse({"count": count, "results": results}, safe=False)
+
+
+# Detalle del producto
+def product(request, modelo):
+    if request.method != "GET":
+        return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+    try:
+        product = Product.objects.get(modelo=modelo)
+    except Product.DoesNotExist:
+        return JsonResponse({"error": "No existe"}, status=404)
+
+    return JsonResponse({"modelo": modelo, "image": product.image, "name": product.name, "price": product.price, "brand": product.brand,
+                         "description": product.description, "model": product.modelo, "color": product.color})
+
+
+# Comprobación, adición, borrado y recogida de favoritos
+@csrf_exempt
+def favorites(request, modelo):
+    try:
+        p = Product.objects.get(modelo=modelo)
+    except Product.DoesNotExist:
+        return JsonResponse({"error": "No existe"}, status=404)
+
+    token_cabeceras = request.headers.get("Token")
+    if token_cabeceras is None:
+        return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
+    else:
+        try:
+            u = Person.objects.get(token=token_cabeceras)
+        except Person.DoesNotExist:
+            return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+    if request.method == "PUT":
+        try:
+            product_person = ProductPerson.objects.get(product=p, person=u)
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except ProductPerson.DoesNotExist:
+            new_product_person = ProductPerson(product=p, person=u)
+            new_product_person.save()
+            return JsonResponse({"status": "Todo OK"}, status=200)
+
+    elif request.method == "DELETE":
+        try:
+            product_person = ProductPerson.objects.get(product=p, person=u)
+            product_person.delete()
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except ProductPerson.DoesNotExist:
+            return JsonResponse({"status": "Todo OK"}, status=200)
+
+    elif request.method == "GET":
+        try:
+            product_person = ProductPerson.objects.get(product=p, person=u)
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except ProductPerson.DoesNotExist:
+            return JsonResponse({"error": "No existe en favoritos"}, status=404)
+
+
+# Adición, borrado y recogida de productos en el carrito
+@csrf_exempt
+def cart(request, modelo):
+    try:
+        p = Product.objects.get(modelo=modelo)
+    except Product.DoesNotExist:
+        return JsonResponse({"error": "No existe"}, status=404)
+
+    token_cabeceras = request.headers.get("Token")
+    if token_cabeceras is None:
+        return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
+    else:
+        try:
+            u = Person.objects.get(token=token_cabeceras)
+        except Person.DoesNotExist:
+            return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+    if request.method == "PUT":
+        try:
+            product_cart = Cart.objects.get(product=p, person=u)
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except Cart.DoesNotExist:
+            new_product_cart = ProductPerson(product=p, person=u)
+            new_product_cart.save()
+            return JsonResponse({"status": "Todo OK"}, status=200)
+
+    elif request.method == "DELETE":
+        try:
+            product_cart = Cart.objects.get(product=p, person=u)
+            product_cart.delete()
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except Cart.DoesNotExist:
+            return JsonResponse({"status": "Todo OK"}, status=200)
+
+    elif request.method == "GET":
+        try:
+            product_cart = Cart.objects.get(product=p, person=u)
+            return JsonResponse({"status": "Todo OK"}, status=200)
+        except Cart.DoesNotExist:
+            return JsonResponse({"error": "No existe en favoritos"}, status=404)
