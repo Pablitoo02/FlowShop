@@ -405,3 +405,23 @@ def favorites_list(request):
 
         return JsonResponse({"favorites": favorites}, safe=False)
     return JsonResponse({"error": "HTTP method not supported"}, status=405)
+
+
+def person(request):
+    token_cabeceras = request.headers.get("Token")
+    if token_cabeceras is None:
+        return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
+    else:
+        try:
+            u = Person.objects.get(token=token_cabeceras)
+        except Person.DoesNotExist:
+            return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+    if request.method == "GET":
+        json_response = {
+            "name": u.name,
+            "surnames": u.surnames,
+            "email": u.email
+        }
+
+        return JsonResponse(json_response, status=200)

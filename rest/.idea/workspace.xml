@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f2661964-5a3d-40b0-8c36-18da06291128" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../app/app/src/main/res/layout/fragment_favorites.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/client/RestClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/client/RestClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/screens/FavouritesFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/screens/FavouritesFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/utils/RecyclerAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/app/src/main/java/com/example/flowshop/utils/RecyclerAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/app/src/main/res/layout/fragment_favourites.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/app/src/main/res/layout/fragment_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../app/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FlowShop/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/FlowShop/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rest_api/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/rest_api/endpoints.py" afterDir="false" />
