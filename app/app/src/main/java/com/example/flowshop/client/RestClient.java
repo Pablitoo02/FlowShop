@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
@@ -385,7 +386,7 @@ public class RestClient {
                     public void onResponse(JSONObject response) {
                         favoriteButton.setBackgroundResource(R.drawable.full_favorite);
                         favoriteButton.setEnabled(true);//HABILITA EL BOTÓN
-                        Toast.makeText(context, "Guardado en favoritos", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Añadido a favoritos", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -447,6 +448,47 @@ public class RestClient {
                 context
         );
         this.queue.add(request);
+    }
+
+    public void favorites(RecyclerView recyclerView, OnProductClickListener listener){
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.GET,
+                BASE_URL + "/v1/favorites",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        List<Product> itemList = new ArrayList() {};
+                        try {
+                            JSONArray results = response.getJSONArray("favorites");
+
+                            for (int i = results.length() - 1; i >= 0; i--) {
+                                JSONObject product = results.getJSONObject(i);
+                                Product newproduct = new Product(product.getString("product__name"), product.getString("product__price"),
+                                        product.getString("product__brand"), product.getString("product__modelo"), BASE_URL + product.getString("product__image"));
+                                itemList.add(newproduct);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        LinearLayoutManager llm = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(llm);
+                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(itemList, listener);
+                        recyclerView.setAdapter(recyclerAdapter);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                },
+                context
+        );
+        queue.add(request);
     }
 }
 

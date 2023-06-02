@@ -2,10 +2,12 @@ import secrets
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from itertools import count
 
 import bcrypt
 import json
 
+import results as results
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -222,10 +224,10 @@ def products(request):
     if size is None:
         if offset is None:
             products = Product.objects.filter(Q(name__contains=name) | Q(brand__contains=name)).values_list('name',
-                                                                                    'price',
-                                                                                    'brand',
-                                                                                    'modelo',
-                                                                                    'image')
+                                                                                                            'price',
+                                                                                                            'brand',
+                                                                                                            'modelo',
+                                                                                                            'image')
         else:
             try:
                 offset = int(offset)
@@ -255,10 +257,10 @@ def products(request):
                                                              'image')[offset:offset + size]
             else:
                 products = Product.objects.filter(Q(name__contains=name) | Q(brand__contains=name)).values_list('name',
-                                                                                        'price',
-                                                                                        'brand',
-                                                                                        'modelo',
-                                                                                        'image')[
+                                                                                                                'price',
+                                                                                                                'brand',
+                                                                                                                'modelo',
+                                                                                                                'image')[
                            offset:offset + size]
 
     count = Product.objects.count()
@@ -285,8 +287,9 @@ def product(request, modelo):
     except Product.DoesNotExist:
         return JsonResponse({"error": "No existe"}, status=404)
 
-    return JsonResponse({"modelo": modelo, "image": product.image, "name": product.name, "price": product.price, "brand": product.brand,
-                         "description": product.description, "model": product.modelo, "color": product.color})
+    return JsonResponse(
+        {"modelo": modelo, "image": product.image, "name": product.name, "price": product.price, "brand": product.brand,
+         "description": product.description, "model": product.modelo, "color": product.color})
 
 
 # Comprobación, adición, borrado y recogida de favoritos
@@ -371,3 +374,34 @@ def cart(request, modelo):
             return JsonResponse({"status": "Todo OK"}, status=200)
         except Cart.DoesNotExist:
             return JsonResponse({"error": "No existe en favoritos"}, status=404)
+
+
+# Lista de favoritos
+def favorites_list(request):
+    token_cabeceras = request.headers.get("Token")
+    if token_cabeceras is None:
+        return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
+    else:
+        try:
+            u = Person.objects.get(token=token_cabeceras)
+        except Person.DoesNotExist:
+            return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+    if request.method == "GET":
+        product_persons = ProductPerson.objects.filter(person__token=token_cabeceras).values_list('product__name',
+                                                                                                  'product__price',
+                                                                                                  'product__brand',
+                                                                                                  'product__modelo',
+                                                                                                  'product__image')
+
+        favorites = []
+        if product_persons is not None:
+            for product_person in product_persons:
+                favorites.append({"product__name": product_person[0],
+                                  "product__price": product_person[1],
+                                  "product__brand": product_person[2],
+                                  'product__modelo': product_person[3],
+                                  "product__image": product_person[4]})
+
+        return JsonResponse({"favorites": favorites}, safe=False)
+    return JsonResponse({"error": "HTTP method not supported"}, status=405)

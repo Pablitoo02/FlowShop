@@ -120,7 +120,13 @@ public class HomeFragment extends Fragment implements OnProductClickListener, Se
     //Método para que los botones funcionen cuando deben
     @Override
     public void onProductsResponse(int count) {
-        next.setEnabled(count > offset+size);
-        previous.setEnabled(offset!=0);
+        next.setEnabled(count > offset + size);
+        previous.setEnabled(offset != 0);
+    }
+
+    //Método que obliga a tener para que no pete la linea 28
+    @Override
+    public void onProductsResponse() {
+
     }
 }
