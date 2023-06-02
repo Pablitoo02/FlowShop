@@ -1,5 +1,6 @@
 package com.example.flowshop.client;
 
+import static android.app.PendingIntent.getActivity;
 import static android.content.Context.MODE_PRIVATE;
 
 import static com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT;
@@ -7,6 +8,7 @@ import static com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -28,6 +31,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.flowshop.R;
 import com.example.flowshop.screens.Drawer;
 import com.example.flowshop.screens.Login;
+import com.example.flowshop.screens.ProfileFragment;
 import com.example.flowshop.screens.ReestablishPassword;
 import com.example.flowshop.utils.Product;
 import com.example.flowshop.utils.RecyclerAdapter;
@@ -491,7 +495,7 @@ public class RestClient {
         queue.add(request);
     }
 
-    public void person(TextView name, TextView surnames, TextView email){
+    public void profile(TextView name, TextView surnames, TextView email){
         queue = Volley.newRequestQueue(context);
 
         JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
@@ -514,6 +518,45 @@ public class RestClient {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                    }
+                },
+                context
+        );
+
+        this.queue.add(request);
+    }
+
+    public void editProfile(EditText name, EditText surnames, EditText email){
+
+        queue = Volley.newRequestQueue(context);
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", name.getText().toString());
+            body.put("surnames", surnames.getText().toString());
+            body.put("email", email.getText().toString());
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.PUT,
+                BASE_URL + "/v1/profile",
+                body,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "CAMBIOS GUARDADOS CORRECTAMENTE", Toast.LENGTH_SHORT).show();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("fragment", "profile");
+                        Intent intent = new Intent(context, Drawer.class);
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error al guardar", Toast.LENGTH_SHORT).show();
                     }
                 },
                 context

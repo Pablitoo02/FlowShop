@@ -81,6 +81,6 @@ public class ProfileFragment extends Fragment {
     //Instancia de la petición de "RestClient" para que muestre los datos de usuario
     private void peticion() {
         restClient = RestClient.getInstance(context);
-        restClient.person(name, surnames ,email);
+        restClient.profile(name, surnames ,email);
     }
 }

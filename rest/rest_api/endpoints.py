@@ -407,7 +407,8 @@ def favorites_list(request):
     return JsonResponse({"error": "HTTP method not supported"}, status=405)
 
 
-def person(request):
+@csrf_exempt
+def profile(request):
     token_cabeceras = request.headers.get("Token")
     if token_cabeceras is None:
         return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
@@ -425,3 +426,12 @@ def person(request):
         }
 
         return JsonResponse(json_response, status=200)
+
+    if request.method == "PUT":
+        body_json = json.loads(request.body)
+
+        u.name = body_json["name"]
+        u.surnames = body_json["surnames"]
+        u.email = body_json["email"]
+        u.save()
+        return JsonResponse({"status": "Todo OK"}, status=200)
