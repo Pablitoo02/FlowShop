@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     public class RecyclerHolder extends RecyclerView.ViewHolder {
         private ImageView productImage;
         private TextView productName, productPrice, productBrand;
+        public LinearLayout layoutDelete;
 
         public RecyclerHolder(@NonNull View itemView_1) {
             super(itemView_1);

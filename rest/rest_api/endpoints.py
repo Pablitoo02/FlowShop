@@ -8,7 +8,8 @@ import bcrypt
 import json
 
 import results as results
-from django.db.models import Q
+from django.db.models import Q, Sum
+from django.db.models.functions import Round
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -271,7 +272,7 @@ def products(request):
             results.append({"name": product[0],
                             "price": product[1],
                             "brand": product[2],
-                            'modelo': product[3],
+                            "modelo": product[3],
                             "image": product[4]})
 
     return JsonResponse({"count": count, "results": results}, safe=False)
@@ -353,27 +354,20 @@ def cart(request, modelo):
 
     if request.method == "PUT":
         try:
-            product_cart = Cart.objects.get(product=p, person=u)
+            cart = Cart.objects.get(product=p, person=u)
             return JsonResponse({"status": "Todo OK"}, status=200)
         except Cart.DoesNotExist:
-            new_product_cart = ProductPerson(product=p, person=u)
-            new_product_cart.save()
+            new_cart = Cart(product=p, person=u)
+            new_cart.save()
             return JsonResponse({"status": "Todo OK"}, status=200)
 
     elif request.method == "DELETE":
         try:
-            product_cart = Cart.objects.get(product=p, person=u)
-            product_cart.delete()
+            cart = Cart.objects.get(product=p, person=u)
+            cart.delete()
             return JsonResponse({"status": "Todo OK"}, status=200)
-        except Cart.DoesNotExist:
+        except ProductPerson.DoesNotExist:
             return JsonResponse({"status": "Todo OK"}, status=200)
-
-    elif request.method == "GET":
-        try:
-            product_cart = Cart.objects.get(product=p, person=u)
-            return JsonResponse({"status": "Todo OK"}, status=200)
-        except Cart.DoesNotExist:
-            return JsonResponse({"error": "No existe en favoritos"}, status=404)
 
 
 # Lista de favoritos
@@ -400,13 +394,14 @@ def favorites_list(request):
                 favorites.append({"product__name": product_person[0],
                                   "product__price": product_person[1],
                                   "product__brand": product_person[2],
-                                  'product__modelo': product_person[3],
+                                  "product__modelo": product_person[3],
                                   "product__image": product_person[4]})
 
         return JsonResponse({"favorites": favorites}, safe=False)
     return JsonResponse({"error": "HTTP method not supported"}, status=405)
 
 
+# Perfil
 @csrf_exempt
 def profile(request):
     token_cabeceras = request.headers.get("Token")
@@ -435,3 +430,41 @@ def profile(request):
         u.email = body_json["email"]
         u.save()
         return JsonResponse({"status": "Todo OK"}, status=200)
+
+
+# Lista del carrito
+@csrf_exempt
+def cart_list(request):
+    token_cabeceras = request.headers.get("Token")
+    if token_cabeceras is None:
+        return JsonResponse({"error": "Falta token en la cabecera"}, status=401)
+    else:
+        try:
+            u = Person.objects.get(token=token_cabeceras)
+        except Person.DoesNotExist:
+            return JsonResponse({"error": "Usuario no logeado"}, status=401)
+
+    if request.method == "GET":
+        carts = Cart.objects.filter(person__token=token_cabeceras).values_list('product__name',
+                                                                               'product__price',
+                                                                               'product__brand',
+                                                                               'product__modelo',
+                                                                               'product__image')
+
+        products_cart = []
+        if carts is not None:
+            for cart in carts:
+                products_cart.append({"product__name": cart[0],
+                                      "product__price": cart[1],
+                                      "product__brand": cart[2],
+                                      "product__modelo": cart[3],
+                                      "product__image": cart[4]})
+
+        # Para sumar los precio y saber el total del carrito, solo con 2 decimales
+        total_price = Cart.objects.filter(person__token=token_cabeceras).aggregate(
+            total_price=Round(Sum('product__price'), 2)
+        )['total_price']
+
+        return JsonResponse({"products_cart": products_cart, "total_price": total_price}, safe=False)
+
+

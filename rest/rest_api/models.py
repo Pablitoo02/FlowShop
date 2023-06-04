@@ -30,9 +30,8 @@ class ProductPerson(models.Model):
 
 class Cart(models.Model):
     # id auto-generated
-    person = models.OneToOneField(Person, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    amount = models.IntegerField()
 
 
 class Order(models.Model):

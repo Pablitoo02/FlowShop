@@ -431,7 +431,7 @@ public class RestClient {
         queue.add(request);
     }
 
-    public void addCart(String modelo, Button cart) {
+    public void addCart(String modelo) {
 
         JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
                 Request.Method.PUT,
@@ -452,6 +452,30 @@ public class RestClient {
                 context
         );
         this.queue.add(request);
+    }
+
+    public void deleteCart(String modelo) {
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.DELETE,
+                BASE_URL + "/v1/products/" + modelo + "/cart",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "Eliminado del carrito", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error al eliminar", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                context
+        );
+
+        queue.add(request);
     }
 
     public void favorites(RecyclerView recyclerView, OnProductClickListener listener){
@@ -563,6 +587,52 @@ public class RestClient {
         );
 
         this.queue.add(request);
+    }
+
+    public void cart(TextView total, RecyclerView recyclerView, OnProductClickListener listener){
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.GET,
+                BASE_URL + "/v1/cart",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        List<Product> itemList = new ArrayList() {};
+                        try {
+                            JSONArray results = response.getJSONArray("products_cart");
+                            //La suma de los precios se graba en una variable de tipo double
+                            //para poder limitar los decimales a dos
+                            double totalPrice = response.getDouble("total_price");
+                            String formattedPrice = String.format("%.2f", totalPrice);
+                            total.setText(formattedPrice);
+
+                            for (int i = results.length() - 1; i >= 0; i--) {
+                                JSONObject product = results.getJSONObject(i);
+                                Product newproduct = new Product(product.getString("product__name"), product.getString("product__price"),
+                                        product.getString("product__brand"), product.getString("product__modelo"), BASE_URL + product.getString("product__image"));
+                                itemList.add(newproduct);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        LinearLayoutManager llm = new LinearLayoutManager(context);
+                        recyclerView.setLayoutManager(llm);
+                        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(itemList, listener);
+                        recyclerView.setAdapter(recyclerAdapter);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                },
+                context
+        );
+        queue.add(request);
     }
 }
 

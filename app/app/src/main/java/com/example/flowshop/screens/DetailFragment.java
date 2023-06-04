@@ -28,7 +28,7 @@ public class DetailFragment extends Fragment {
     private TextView name, price, brand, description, model, color;
     private ImageView image;
     private ImageButton favorite;
-    private Button cart;
+    private Button addCart, deleteCart;
     private String modelo;
 
     private static final String ARG_PARAM1 = "param1";
@@ -78,17 +78,6 @@ public class DetailFragment extends Fragment {
         favorite = view.findViewById(R.id.favorite);
         favorite.setOnClickListener(favoriteListener);
 
-        cart = view.findViewById(R.id.cart);
-
-        //Método para que, al pulsar el botón de "AÑADIR AL CARRITO",
-        // el producto se añada al carrito
-        cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                restClient.addCart(modelo, cart);
-            }
-        });
-
         //Método que recibe si el producto está o no guardado en favoritos
         //y pone el icono correespondiente
         restClient.isFavorite(modelo, new IsFavoriteListener() {
@@ -103,6 +92,29 @@ public class DetailFragment extends Fragment {
                 }
             }
         });
+
+        addCart = view.findViewById(R.id.addCart);
+
+        //Método para que, al pulsar el botón de "AÑADIR AL CARRITO",
+        // el producto se añada al carrito
+        addCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restClient.addCart(modelo);
+            }
+        });
+
+        deleteCart = view.findViewById(R.id.deleteCart);
+
+        //Método para que, al pulsar el botón de "ELIMINAR DEL CARRITO",
+        // el producto se elimina al carrito
+        deleteCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                restClient.deleteCart(modelo);
+            }
+        });
+
         super.onViewCreated(view, savedInstanceState);
     }
 

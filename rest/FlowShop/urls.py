@@ -31,4 +31,5 @@ urlpatterns = [
     path('v1/products/<str:modelo>/cart', endpoints.cart),
     path('v1/favorites', endpoints.favorites_list),
     path('v1/profile', endpoints.profile),
+    path('v1/cart', endpoints.cart_list),
 ]
