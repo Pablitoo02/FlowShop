@@ -2,18 +2,16 @@ import secrets
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from itertools import count
 
 import bcrypt
 import json
 
-import results as results
 from django.db.models import Q, Sum
 from django.db.models.functions import Round
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Person, Product, ProductPerson, Cart, Order
+from .models import Person, Product, ProductPerson, Cart
 
 
 def health(request):
