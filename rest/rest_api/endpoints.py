@@ -467,4 +467,5 @@ def cart_list(request):
 
         return JsonResponse({"products_cart": products_cart, "total_price": total_price}, safe=False)
 
-
+    if request.method == "DELETE":
+        Cart.objects.all().delete()

@@ -634,6 +634,65 @@ public class RestClient {
         );
         queue.add(request);
     }
+
+    public void payment(TextView total){
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.GET,
+                BASE_URL + "/v1/cart",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        List<Product> itemList = new ArrayList() {};
+                        try {
+                            //La suma de los precios se graba en una variable de tipo double
+                            //para poder limitar los decimales a dos
+                            double totalPrice = response.getDouble("total_price");
+                            String formattedPrice = String.format("%.2f", totalPrice);
+                            total.setText(formattedPrice);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                },
+                context
+        );
+        queue.add(request);
+    }
+
+    public void deleteCartList(){
+        queue = Volley.newRequestQueue(context);
+
+        JsonObjectRequestWithCustomAuth request = new JsonObjectRequestWithCustomAuth(
+                Request.Method.DELETE,
+                BASE_URL + "/v1/cart",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                },
+                context
+        );
+        queue.add(request);
+    }
 }
 
 

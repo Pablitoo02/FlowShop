@@ -1,6 +1,7 @@
 package com.example.flowshop.screens;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.app.Fragment;
@@ -8,6 +9,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +33,7 @@ public class CartFragment extends Fragment implements OnProductClickListener {
     private RecyclerAdapter cartAdapter;
     private List<Product> items;
     private RestClient restClient;
+    private Button payment;
 
     public static Fragment newInstance() {
         CartFragment myFragment = new CartFragment();
@@ -54,6 +57,17 @@ public class CartFragment extends Fragment implements OnProductClickListener {
 
         cartAdapter = new RecyclerAdapter(items, this);
         cart_recycler.setAdapter(cartAdapter);
+
+        payment = view.findViewById(R.id.payment);
+
+        //Método para que, al pulsar el botón de "AÑADIR AL CARRITO",
+        //el producto se añada al carrito
+        payment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, Payment.class));
+            }
+        });
 
         peticion();
 
