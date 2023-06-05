@@ -46,7 +46,7 @@ git clone https://github.com/tu-nombre-usuario/FlowShop.git
 pip install -r requirements.txt
 5. Moverse a la carpeta rest/
 6. Ejecutar python manage.py runserver
-7. Listo! Ya puedes probar FlowShop
+7. Ya puedes probar FlowShop!
 
 Para probarlo en un móvil habría que:
 
@@ -55,4 +55,4 @@ Para probarlo en un móvil habría que:
 3. En la clase RestClient, cambiar la variable LOCALHOST por http://ipOrdenador:8000
 4. Asignar a BASE_URL la variable LOCALHOST
 5. Al iniciar el servidor usar python manage.py runserver 0.0.0.0:8000
-6. Listo! Ya puedes probar FlowShop en tu dispositivo móvil
+6. Ya puedes probar FlowShop en tu dispositivo móvil!
