@@ -51,9 +51,9 @@ public class RestClient {
     //URL para utilizar la aplicación desde el emulador
     private String BASE_REAL_URL = "http://10.0.2.2:8000";
     //URL para utilizar la aplicación desde el móvil (tienen que estar conectados a la misma red)
-    private String LOCALHOST = "http://10.0.2.2:8000";
+    private String LOCALHOST = "";
     //Para elegir la URL a usar
-    private String BASE_URL = LOCALHOST;
+    private String BASE_URL = BASE_REAL_URL;
 
     private Context context;
 
