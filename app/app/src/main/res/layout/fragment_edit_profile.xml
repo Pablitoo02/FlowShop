@@ -10,13 +10,14 @@
         android:id="@+id/editProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        android:text="Editar Perfil"
-        android:textSize="35dp"
+        android:layout_marginTop="140dp"
         android:gravity="center"
-        android:textStyle="bold"
+        android:text="Editar Perfil"
         android:textColor="@color/black"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="35dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/textName"
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:fontFamily="@font/alegreya_bold"
-        android:hint="Pablo"
+        android:hint="Nombre"
         android:textColor="@color/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textName"/>
@@ -59,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:fontFamily="@font/alegreya_bold"
-        android:hint="Hermida Albo"
+        android:hint="Apellidos"
         android:textColor="@color/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textSurnames"/>
@@ -82,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:fontFamily="@font/alegreya_bold"
-        android:hint="pablo.1hermida@gmail.com"
+        android:hint="Email"
         android:textColor="@color/logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textEmail"/>
