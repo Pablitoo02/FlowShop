@@ -44,9 +44,8 @@ git clone https://github.com/tu-nombre-usuario/FlowShop.git
 3. En el terminal, situarse en la carpeta rest/
 4. Intalar las dependencias necesarias
 pip install -r requirements.txt
-5. Moverse a la carpeta rest/
-6. Ejecutar python manage.py runserver
-7. Ya puedes probar FlowShop!
+5. Ejecutar python manage.py runserver
+6. Ya puedes probar FlowShop!
 
 Para probarlo en un móvil habría que:
 
